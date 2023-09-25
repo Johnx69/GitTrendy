@@ -1,7 +1,7 @@
 package repo_impl
 
 import (
-	custom_error "GitTrendy/custome_error"
+	custom_error "GitTrendy/custom_error"
 	"GitTrendy/db"
 	"GitTrendy/model"
 	"GitTrendy/repository"
