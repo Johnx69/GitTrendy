@@ -1,18 +1,41 @@
 package main
 
 import (
-	"github-trending/handler"
+	"GitTrendy/db"
+	"GitTrendy/handler"
+	"GitTrendy/repository/repo_impl"
+	"GitTrendy/router"
 
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
-    e := echo.New()
-    e.GET("/", handler.Welcome)
-    e.GET("/user/sign-in", handler.HandleSignIn)
-    e.GET("/user/sign-up", handler.HandleSignUp)
 
-    e.Logger.Fatal(e.Start(":1323"))
+    sql := &db.Sql{
+        Host: "localhost",
+        Port: 5432,
+        UserName: "hoanganh692004",
+        Password: "postgres",
+        DbName: "GitTrendy",
+    }
+
+    sql.Connect()
+    defer sql.Close()
+
+    e := echo.New()
+
+    userHandler := handler.UserHandler{
+        UserRepo: repo_impl.NewUserRepo(sql),
+    }
+
+    api := router.API{
+        Echo: e,
+        UserHandler: userHandler,
+    }
+    
+    api.SetupRouter()
+
+    e.Logger.Fatal(e.Start(":3000"))
 }
 
 
