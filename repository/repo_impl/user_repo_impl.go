@@ -4,8 +4,10 @@ import (
 	custom_error "GitTrendy/custom_error"
 	"GitTrendy/db"
 	"GitTrendy/model"
+	"GitTrendy/model/req"
 	"GitTrendy/repository"
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/labstack/gommon/log"
@@ -44,4 +46,18 @@ func (u UserRepoImpl) SaveUser(context context.Context, user model.User) (model.
 
 	return user, nil
 
+}
+
+func (u *UserRepoImpl) CheckLogin(context context.Context, loginReq req.ReqSignIn) (model.User, error){
+	var user = model.User{}
+	err := u.sql.Db.GetContext(context, &user, "SELECT * FROM users WHERE email=$1", loginReq.Email)
+
+	if err != nil {
+		if err == sql.ErrNoRows{
+			return user, custom_error.UserNotFound
+		}
+		log.Error(err.Error())
+		return user, err
+	}
+	return user, nil
 }
