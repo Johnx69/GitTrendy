@@ -36,14 +36,14 @@ func (u *UserHandler) HandleSignUp(c echo.Context) error {
 		})
 	}
 
-	if err := c.Validate(req); err != nil {
-		log.Error(err.Error())
-		return c.JSON(http.StatusBadRequest, model.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    err.Error(),
-			Data:       nil,
-		})
-	}
+	// if err := c.Validate(req); err != nil {
+	// 	log.Error(err.Error())
+	// 	return c.JSON(http.StatusBadRequest, model.Response{
+	// 		StatusCode: http.StatusBadRequest,
+	// 		Message:    err.Error(),
+	// 		Data:       nil,
+	// 	})
+	// }
 
 	hash := security.HashAndSalt([]byte(req.Password))
 	role := model.MEMBER.String()
@@ -75,10 +75,12 @@ func (u *UserHandler) HandleSignUp(c echo.Context) error {
 			Data:       nil,
 		})
 	}
+	
+	user.Password = ""
 
 	return c.JSON(http.StatusOK, model.Response{
 		StatusCode: http.StatusOK,
-		Message:    "Xử lý thành công",
+		Message:    "Sigup sucessfully!",
 		Data:       user,
 	})
 }
